@@ -6,9 +6,11 @@
 package servelets;
 
 import buisness.CategoryBusiness;
-import buisness.UserBusiness;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -22,8 +24,8 @@ import model.User;
  *
  * @author dell-soncini
  */
-@WebServlet(name = "CategoryNew", urlPatterns = {"/category/new"})
-public class CategoryNew extends HttpServlet {
+@WebServlet(name = "budget", urlPatterns = {"/user/budget"})
+public class UserBudget extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,10 +44,10 @@ public class CategoryNew extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet CategoryNew</title>");            
+            out.println("<title>Servlet budget</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet CategoryNew at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet budget at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -64,13 +66,23 @@ public class CategoryNew extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        model.User user = (model.User)session.getAttribute("User");
-        if(user == null || user.getId() != 1)
+        User user = (User)session.getAttribute("User");
+        if(user == null)
         {
-            response.sendRedirect("/financeiro/index");
+            Date dNow = new Date();
+            SimpleDateFormat ftmes = new SimpleDateFormat("MM");
+            String mes = ftmes.format(dNow);
+            SimpleDateFormat ftano = new SimpleDateFormat("yyyy");
+            String ano = ftano.format(dNow);
+            request.setAttribute("Mes", mes);
+            request.setAttribute("Ano", ano);
+            ArrayList<Category> c = CategoryBusiness.getAll();
+            request.setAttribute("Categories", c);
+            
+            request.getRequestDispatcher("/budget.jsp").forward(request, response);
         }
-        else {
-            request.getRequestDispatcher("/CategoryNew.jsp").forward(request, response);
+        else{
+            request.getRequestDispatcher("/budget.jsp").forward(request, response);
         }
     }
 
@@ -85,23 +97,7 @@ public class CategoryNew extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        model.User user = (model.User)session.getAttribute("User");
-        if(user == null || user.getId() != 1)
-        {
-            response.sendRedirect("/financeiro/index");
-        }
-        else {
-            Category c = new Category();
-            String name = (String) request.getParameter("name");
-            String description = (String) request.getParameter("description");
-            boolean entrece = request.getParameter("entrece") == null? false :((String)request.getParameter("entrece")).equals("true");
-            c.setName(name);
-            c.setDescription(description);
-            c.setEntrece(entrece);
-            CategoryBusiness.insert(c);
-            response.sendRedirect("/financeiro/category/list");
-        }
+        processRequest(request, response);
     }
 
     /**

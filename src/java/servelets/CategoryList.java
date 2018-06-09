@@ -5,22 +5,26 @@
  */
 package servelets;
 
+import buisness.CategoryBusiness;
+import buisness.UserBusiness;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import model.Category;
 import model.User;
 
 /**
  *
  * @author dell-soncini
  */
-@WebServlet(name = "budget", urlPatterns = {"/user/budget"})
-public class Budget extends HttpServlet {
+@WebServlet(name = "Cartegory", urlPatterns = {"/category/list"})
+public class CategoryList extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,10 +43,10 @@ public class Budget extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet budget</title>");            
+            out.println("<title>Servlet Cartegory</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet budget at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet Cartegory at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -61,13 +65,18 @@ public class Budget extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        User user = (User)session.getAttribute("User");
-        if(user == null)
+        model.User user = (model.User)session.getAttribute("User");
+        if(user == null || user.getId() != 1)
         {
             response.sendRedirect("/financeiro/index");
         }
-        else{
-            request.getRequestDispatcher("/budget.jsp").forward(request, response);
+        else {
+
+            ArrayList<Category> c = CategoryBusiness.getAll();
+
+            request.setAttribute("Categories", c);
+            request.getRequestDispatcher("/categoryList.jsp").forward(request, response);
+          
         }
     }
 

@@ -20,14 +20,11 @@ public class Category {
     Date created_at;
     Date updated_at;
     public Category(){}
-    public Category(int id, String name, String description, int Parent, boolean entrece, Date created_at, Date updated_at) {
+    public Category(int id, String name, String description, boolean entrece) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.Parent = Parent;
         this.entrece = entrece;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
     }
 
     public int getId() {

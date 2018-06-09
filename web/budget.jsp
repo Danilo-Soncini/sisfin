@@ -3,7 +3,7 @@
     Created on : Jun 14, 2018, 10:08:17 PM
     Author     : dell-soncini
 --%>
-
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -32,7 +32,7 @@
     <link href="/financeiro/plugin/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom Theme Style -->
-    <link href="/css/custom.css" rel="stylesheet">
+    <link href="/financeiro/css/custom.css" rel="stylesheet">
 </head>
 
 <body class="nav-md">
@@ -43,26 +43,56 @@
         <div class="right_col" role="main">
             <div class="" role="tabpanel" data-example-id="togglable-tabs">
                 <ul  class="nav nav-tabs bar_tabs" role="tablist">
-                    @foreach ($budgets as $budget)
-                        <li role="presentation" class="@if($budget->month == $month && $budget->year == $year) active @endif">
-
-                            <a href="/budget?year={{$budget->year}}&month={{$budget->month}}"  aria-expanded="true">{{strMonth($budget->month)}} {{$budget->year}} </a>
-                        </li>
-                    @endforeach
+    
+                    <li role="presentation" class="${Mes.equals("01") ? 'active' : ''}">
+                        <a href="/financeiro/user/budget?year=${Ano}&month=01"  aria-expanded="true"> 01/${Ano} </a>
+                    </li>
+                    <li role="presentation" class="${Mes.equals("02") ? 'active' : ''}">
+                        <a href="/financeiro/user/budget?year=${Ano}&month=02"  aria-expanded="true"> 02/${Ano} </a>
+                    </li>
+                    <li role="presentation" class="${Mes.equals("03") ? 'active' : ''}">
+                        <a href="/financeiro/user/budget?year=${Ano}&month=03"  aria-expanded="true"> 03/${Ano} </a>
+                    </li>
+                    <li role="presentation" class="${Mes.equals("04") ? 'active' : ''}">
+                        <a href="/financeiro/user/budget?year=${Ano}&month=04"  aria-expanded="true"> 04/${Ano} </a>
+                    </li>
+                    <li role="presentation" class="${Mes.equals("05") ? 'active' : ''}">
+                        <a href="/financeiro/user/budget?year=${Ano}&month=05"  aria-expanded="true"> 05/${Ano} </a>
+                    </li>
+                    <li role="presentation" class="${Mes.equals("06") ? 'active' : ''}">
+                        <a href="/financeiro/user/budget?year=${Ano}&month=06"  aria-expanded="true"> 06/${Ano} </a>
+                    </li>
+                    <li role="presentation" class="${Mes.equals("07") ? 'active' : ''}">
+                        <a href="/financeiro/user/budget?year=${Ano}&month=07"  aria-expanded="true"> 07/${Ano} </a>
+                    </li>
+                    <li role="presentation" class="${Mes.equals("08") ? 'active' : ''}">
+                        <a href="/financeiro/user/budget?year=${Ano}&month=08"  aria-expanded="true"> 08/${Ano} </a>
+                    </li>
+                    <li role="presentation" class="${Mes.equals("09") ? 'active' : ''}">
+                        <a href="/financeiro/user/budget?year=${Ano}&month=09"  aria-expanded="true"> 09/${Ano} </a>
+                    </li>
+                    <li role="presentation" class="${Mes.equals("10") ? 'active' : ''}">
+                        <a href="/financeiro/user/budget?year=${Ano}&month=10"  aria-expanded="true"> 10/${Ano} </a>
+                    </li>
+                    <li role="presentation" class="${Mes.equals("11") ? 'active' : ''}">
+                        <a href="/financeiro/user/budget?year=${Ano}&month=11"  aria-expanded="true"> 11/${Ano} </a>
+                    </li>
+                    <li role="presentation" class="${Mes.equals("12") ? 'active' : ''}">
+                        <a href="/financeiro/user/budget?year=${Ano}&month=12"  aria-expanded="true"> 12/${Ano} </a>
+                    </li>
                 </ul>
                 <div id="myTabContent" class="tab-content">
 
                     <div class="">
-                        <form action="/budget/save" method="post">
-                            {{ csrf_field() }}
-                            <input type="hidden" name="month" value="{{$month}}">
-                            <input type="hidden" name="year" value="{{$year}}">
+                        <form action="" method="post">
+                            <input type="hidden" name="month" value="${Mes}">
+                            <input type="hidden" name="year" value="${Ano}">
                             <div class="row">
                                 <div class="col-md-12 col-sm-12 col-xs-12">
                                     <div class="x_panel">
                                         <div class="x_title">
-                                            <h2>Orçamento {{strMonth($month)}} {{$year}} </h2>
-                                            <a class="btn btn-dark pull-right"   href="/spend?year={{$year}}&month={{$month}}" >Gastos</a>
+                                            <h2>Orçamento ${Mes}/${Ano} </h2>
+                                            <a class="btn btn-dark pull-right"   href="/spend?year=${Mes}&month=${Ano}" >Gastos</a>
                                         </div>
                                         <div class="x_content">
                                             <table  class="table table-striped table-bordered">
@@ -70,20 +100,18 @@
                                                 <thead>
                                                 <tr>
                                                     <td>Nome</td>
-
                                                     <td>Valor</td>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                @foreach ($categories as $category)
+                                                 <c:forEach items="${Categories}" var="category"> 
                                                     <tr>
-                                                        <td>{{ $category->name }}</td>
-                                                        <td>
-                                                            @if(!$category->hasChild)  <input name="cat{{ $category->idCategory }}" type="text" value="{{$category->budget != null ?$category->budget : 0 }}"> @endif
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                                </tbody>
+                                                         <td>${category.name}</td>
+                                                         <td>
+                                                              <input name="cat${category.id}" type="text" value="${budget[category->id] != null ? budget[category->id] : 0 }">
+                                                         </td>
+                                                     </tr>
+                                                 </c:forEach>       
                                             </table>
 
                                             <button class="btn btn-primary pull-right" >Salvar </button>

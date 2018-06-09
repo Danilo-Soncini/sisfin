@@ -76,7 +76,7 @@ public class UserEdit extends HttpServlet {
                  request.getRequestDispatcher("/UserEdit.jsp").forward(request, response);
              }
              else{
-                 response.sendRedirect("/financeiro/user");
+                 response.sendRedirect("/financeiro/user/list");
              }
          }
        
