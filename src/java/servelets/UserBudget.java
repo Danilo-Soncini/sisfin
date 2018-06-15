@@ -6,11 +6,14 @@
 package servelets;
 
 import buisness.CategoryBusiness;
+import dao.userBudgetDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Enumeration;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.Category;
+import model.UseBudget;
 import model.User;
 
 /**
@@ -67,22 +71,29 @@ public class UserBudget extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         User user = (User)session.getAttribute("User");
-        if(user == null)
+        if(user != null)
         {
-            Date dNow = new Date();
-            SimpleDateFormat ftmes = new SimpleDateFormat("MM");
-            String mes = ftmes.format(dNow);
-            SimpleDateFormat ftano = new SimpleDateFormat("yyyy");
-            String ano = ftano.format(dNow);
+            String mes = (String) request.getParameter("month");
+            String ano = (String)request.getParameter("year");
+            if(mes == null || ano == null ){
+                Date dNow = new Date();
+                SimpleDateFormat ftmes = new SimpleDateFormat("MM");
+                 mes = ftmes.format(dNow);
+                SimpleDateFormat ftano = new SimpleDateFormat("yyyy");
+                 ano = ftano.format(dNow);
+               
+            }
+            userBudgetDAO ubg =new userBudgetDAO();
+            ArrayList<UseBudget>Orcamentos = ubg.get(user.getId(), Integer.parseInt(mes), Integer.parseInt(ano));
             request.setAttribute("Mes", mes);
             request.setAttribute("Ano", ano);
             ArrayList<Category> c = CategoryBusiness.getAll();
             request.setAttribute("Categories", c);
-            
+            request.setAttribute("Orcamentos", Orcamentos);
             request.getRequestDispatcher("/budget.jsp").forward(request, response);
         }
         else{
-            request.getRequestDispatcher("/budget.jsp").forward(request, response);
+            response.sendRedirect("/financeiro/index");
         }
     }
 
@@ -97,7 +108,44 @@ public class UserBudget extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+         HttpSession session = request.getSession();
+        User user = (User)session.getAttribute("User");
+        if(user != null)
+        {
+            Enumeration<String> atributes = request.getParameterNames();
+            int month = Integer.parseInt(request.getParameter("month"));
+            int year = Integer.parseInt(request.getParameter("year"));
+            int idCategory = 0;
+            double valor = 0;
+            while (atributes.hasMoreElements())
+            {
+                String name = (String) atributes.nextElement();
+                if(name.indexOf("cat") > -1)
+                {
+                     idCategory = Integer.parseInt(name.replace("cat", ""));
+                     valor = Double.parseDouble("0"+(String)request.getParameter(name));
+                     UseBudget buget = new UseBudget();
+                     buget.setIdUser(user.getId());
+                     buget.setIdCategory(idCategory);
+                     buget.setBudget(valor);
+                     buget.setYear(year);
+                     buget.setMonth(month);
+                     userBudgetDAO u = new userBudgetDAO();
+                     buget = u.upInsert(buget);
+                }
+            }
+            
+            response.sendRedirect("/financeiro/user/budget?year="+year+"&month="+month);
+        }
+        else{
+            response.sendRedirect("/financeiro/index");
+        }
+
+        /*for(String i : atributes)
+        {
+        
+        }*/
+        //request.get
     }
 
     /**

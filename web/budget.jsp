@@ -108,7 +108,7 @@
                                                     <tr>
                                                          <td>${category.name}</td>
                                                          <td>
-                                                              <input name="cat${category.id}" type="text" value="${budget[category->id] != null ? budget[category->id] : 0 }">
+                                                              <input name="cat${category.id}" type="text" value="<c:forEach items="${Orcamentos}" var="budget">${budget.idCategory == category.id  ? budget.budget :"" }</c:forEach >">
                                                          </td>
                                                      </tr>
                                                  </c:forEach>       

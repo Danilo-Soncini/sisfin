@@ -59,9 +59,9 @@
 
                     <div class="clearfix"></div>
 
-                    <div class="separator" style="display:none">
-                        <p class="change_link">New to site?
-                            <a href="#signup" class="to_register"> Create Account </a>
+                    <div class="separator" >
+                        <p class="change_link">Novo no site?
+                            <a href="/financeiro/user/new" class="to_register"> Cadastre-se</a>
                         </p>
 
                         <div class="clearfix"></div>

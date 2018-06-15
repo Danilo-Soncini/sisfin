@@ -15,24 +15,40 @@ public class UseBudget {
     int id;
     Category category;
     User user;
+    int idUser;
+    int idCategory;
     int Year;
     int month;
     double  budget;
     Date created_at;
     Date update_at;
 
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
+    }
+
+    public void setIdCategory(int idCategory) {
+        this.idCategory = idCategory;
+    }
+
+    public int getIdUser() {
+        return idUser;
+    }
+
+    public int getIdCategory() {
+        return idCategory;
+    }
+
     public UseBudget() {
     }
 
-    public UseBudget(int id, Category category, User user, int Year, int month, double budget, Date created_at, Date update_at) {
+    public UseBudget(int id, int idCategory, int idUser, int Year, int month, double budget) {
         this.id = id;
-        this.category = category;
-        this.user = user;
+        this.idCategory = idCategory;
+        this.idUser = idUser;
         this.Year = Year;
         this.month = month;
         this.budget = budget;
-        this.created_at = created_at;
-        this.update_at = update_at;
     }
 
     public int getId() {
